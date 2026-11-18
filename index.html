@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sankt Martin Bildkarten – Vocabulario Interactivo</title>
+
+  <!-- Tipografía redondeada legible para alumnado infantil y juvenil (Nunito) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       VARIABLES DE DISEÑO Y PALETA DE COLORES (OTOÑAL, CÁLIDA Y LUMINOSA)
+       ========================================================================== */
+    :root {
+      /* Fondos cálidos luminosos */
+      --bg-cream: #fdf6e3;
+      --bg-honey: #faecd3;
+      --bg-sand: #f4e2c6;
+
+      /* Acentos festivos (farolillo dorado y manto rojo) */
+      --accent-gold: #f59e0b;
+      --accent-gold-light: #fef3c7;
+      --accent-gold-dark: #b45309;
+      --accent-red-cloak: #c0392b;
+      --accent-red-bright: #e11d48;
+
+      /* Texto principal sobre fondo claro */
+      --text-main: #451a03;
+      --text-muted: #78350f;
+
+      /* Tarjetas (borde azul clásico de 3px y fondo blanco puro) */
+      --card-bg: #ffffff;
+      --card-border-blue: #1d4ed8;
+      --card-border-blue-hover: #2563eb;
+
+      /* Código de colores gramaticales en alemán */
+      --color-der: #1d4ed8;   /* Masculino: Azul */
+      --color-die: #e11d48;   /* Femenino: Rojo / Rosa */
+      --color-das: #15803d;   /* Neutro: Verde */
+      --color-other: #451a03; /* Verbos, adjetivos y sustantivo principal */
+      --color-es: #64748b;    /* Traducción al español: Gris cálido suave */
+
+      /* Tipografía */
+      --font-main: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-word: 'Fredoka', 'Nunito', sans-serif;
+    }
+
+    /* ==========================================================================
+       RESET Y ESTILOS BASE
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+      font-family: var(--font-main);
+      color: var(--text-main);
+      background: linear-gradient(155deg, var(--bg-cream) 0%, var(--bg-honey) 52%, var(--bg-sand) 100%);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Destellos cálidos muy sutiles en el fondo otoñal */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        radial-gradient(circle at 12% 18%, rgba(245, 158, 11, 0.08) 0%, transparent 28%),
+        radial-gradient(circle at 88% 14%, rgba(217, 119, 6, 0.08) 0%, transparent 32%),
+        radial-gradient(circle at 82% 84%, rgba(192, 57, 43, 0.06) 0%, transparent 35%),
+        radial-gradient(circle at 15% 82%, rgba(245, 158, 11, 0.07) 0%, transparent 30%);
+    }
+
+    /* Contenedor principal centrado */
+    .app-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 2.5rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    /* ==========================================================================
+       CABECERA LIMPIA Y ORDENADA
+       ========================================================================== */
+    .app-header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.4rem 0;
+    }
+
+    .title-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      background: rgba(255, 255, 255, 0.85);
+      border: 2px solid rgba(245, 158, 11, 0.45);
+      padding: 0.65rem 1.5rem;
+      border-radius: 999px;
+      box-shadow: 0 6px 20px rgba(180, 83, 9, 0.1);
+    }
+
+    .lantern-icon {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+    }
+
+    .app-title {
+      font-family: var(--font-word);
+      font-size: clamp(1.65rem, 3.8vw, 2.55rem);
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: 0.01em;
+      line-height: 1.1;
+    }
+
+    .app-subtitle {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* Superposición visual al arrastrar archivos (Drag & Drop) */
+    .drop-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(253, 246, 227, 0.92);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .drop-overlay.active {
+      display: flex;
+    }
+
+    .drop-overlay-box {
+      border: 3px dashed var(--accent-gold);
+      border-radius: 24px;
+      background: #ffffff;
+      padding: 2.5rem 2rem;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(180, 83, 9, 0.18);
+    }
+
+    .drop-overlay-box h2 {
+      font-family: var(--font-word);
+      font-size: 1.65rem;
+      color: var(--accent-gold-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .drop-overlay-box p {
+      color: var(--text-main);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* ==========================================================================
+       BARRA DE CONTROLES Y LEYENDA DE COLORES
+       ========================================================================== */
+    .controls-panel {
+      background: rgba(255, 255, 255, 0.88);
+      border: 2px solid rgba(217, 119, 6, 0.25);
+      border-radius: 20px;
+      padding: 0.85rem 1.1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      box-shadow: 0 8px 24px rgba(180, 83, 9, 0.08);
+      backdrop-filter: blur(8px);
+    }
+
+    .control-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Botones de control táctiles (mínimo 44px de alto) */
+    .btn {
+      appearance: none;
+      border: none;
+      font-family: var(--font-main);
+      font-weight: 800;
+      font-size: 0.92rem;
+      padding: 0.6rem 1rem;
+      border-radius: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.42rem;
+      min-height: 44px;
+      transition: transform 0.18s ease, background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      user-select: none;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    /* Botones de selector de vista */
+    .btn-mode {
+      background: #fffbeb;
+      color: var(--text-muted);
+      border: 1.5px solid #fde68a;
+    }
+
+    .btn-mode:hover {
+      background: #fef3c7;
+      color: var(--text-main);
+    }
+
+    .btn-mode.active {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: #451a03;
+      border-color: #d97706;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.28);
+    }
+
+    /* Botones de acción */
+    .btn-action {
+      background: #ffffff;
+      color: var(--text-main);
+      border: 1.5px solid #e2e8f0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-action:hover {
+      background: #fffbeb;
+      border-color: #f59e0b;
+      transform: translateY(-1px);
+    }
+
+    .btn-upload {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1.5px dashed #93c5fd;
+    }
+
+    .btn-upload:hover {
+      background: #dbeafe;
+      border-color: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    .btn-cloak {
+      background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+      color: #ffffff;
+      border: 1.5px solid #9f1239;
+      box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+    }
+
+    .btn-cloak:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px);
+    }
+
+    .btn-export {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1.5px solid #6ee7b7;
+    }
+
+    .btn-export:hover {
+      background: #d1fae5;
+      border-color: #10b981;
+      transform: translateY(-1px);
+    }
+
+    .btn-clear-saved {
+      display: none;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1.5px solid #cbd5e1;
+      font-size: 0.84rem;
+      padding: 0.5rem 0.8rem;
+    }
+
+    .btn-clear-saved.visible {
+      display: inline-flex;
+    }
+
+    .btn-clear-saved:hover {
+      background: #ffe4e6;
+      border-color: #fda4af;
+      color: #be123c;
+    }
+
+    /* Input de archivos oculto */
+    #fileInputImages {
+      display: none;
+    }
+
+    /* Contador de progreso */
+    .progress-pill {
+      background: #fffbeb;
+      border: 1.5px solid #fcd34d;
+      color: var(--accent-gold-dark);
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 0.55rem 0.95rem;
+      border-radius: 14px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+
+    /* Aviso discreto al cargar imágenes */
+    .upload-status {
+      display: none;
+      background: #dcfce7;
+      border: 1.5px solid #86efac;
+      color: #166534;
+      padding: 0.55rem 1rem;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .upload-status.visible {
+      display: block;
+    }
+
+    /* Leyenda de artículos */
+    .grammar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 0.6rem 1rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--text-main);
+      padding: 0.28rem 0.8rem;
+      border-radius: 999px;
+      font-weight: 800;
+      border: 1px solid rgba(217, 119, 6, 0.2);
+      box-shadow: 0 2px 6px rgba(180, 83, 9, 0.06);
+    }
+
+    .legend-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    /* ==========================================================================
+       VISTA EN CUADRÍCULA (24 TARJETAS)
+       ========================================================================== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem;
+      width: 100%;
+    }
+
+    @media (min-width: 1200px) {
+      .cards-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.85rem;
+      }
+    }
+
+    /* ==========================================================================
+       TARJETA CON ANIMACIÓN FLIP 3D
+       ========================================================================== */
+    .flashcard {
+      perspective: 1200px;
+      aspect-ratio: 4 / 4.35;
+      cursor: pointer;
+      user-select: none;
+      outline: none;
+    }
+
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      transform-style: preserve-3d;
+    }
+
+    /* Elevación suave al pasar el ratón */
+    .flashcard:hover .flashcard-inner {
+      transform: translateY(-5px);
+    }
+
+    .flashcard.is-flipped .flashcard-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flashcard.is-flipped:hover .flashcard-inner {
+      transform: rotateY(180deg) translateY(-5px);
+    }
+
+    .flashcard-face {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background-color: var(--card-bg);
+      border: 3px solid var(--card-border-blue);
+      border-radius: 18px;
+      box-shadow: 0 8px 20px rgba(180, 83, 9, 0.12), 0 2px 6px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      overflow: hidden;
+      transition: box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .flashcard:hover .flashcard-face {
+      border-color: var(--card-border-blue-hover);
+      box-shadow: 0 14px 28px rgba(180, 83, 9, 0.18), 0 4px 10px rgba(29, 78, 216, 0.12);
+    }
+
+    /* CARA DELANTERA: SOLO IMAGEN CENTRADA O MARCADOR LIMPIO */
+    .flashcard-front {
+      background: #ffffff;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      pointer-events: none;
+    }
+
+    /* Marcador de posición limpio y elegante cuando aún no está la carpeta imagenes/ */
+    .img-placeholder {
+      width: 100%;
+      height: 100%;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: #475569;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1rem 0.75rem;
+      gap: 0.55rem;
+    }
+
+    .placeholder-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    .placeholder-file-badge {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 0.35rem 0.65rem;
+      border-radius: 8px;
+      max-width: 100%;
+      word-break: break-word;
+    }
+
+    /* CARA TRASERA: PALABRA EN ALEMÁN + TRADUCCIÓN ESPAÑOL */
+    .flashcard-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(180deg, #ffffff 0%, #fffdf9 100%);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      gap: 0.65rem;
+    }
+
+    /* Acento sutil en el borde superior interior según género gramatical */
+    .flashcard-back.gender-der {
+      box-shadow: 0 8px 20px rgba(180, 83, 9, 0.12), inset 0 6px 0 var(--color-der);
+    }
+
+    .flashcard-back.gender-die {
+      box-shadow: 0 8px 20px rgba(180, 83, 9, 0.12), inset 0 6px 0 var(--color-die);
+    }
+
+    .flashcard-back.gender-das {
+      box-shadow: 0 8px 20px rgba(180, 83, 9, 0.12), inset 0 6px 0 var(--color-das);
+    }
+
+    .word-de {
+      font-family: var(--font-word);
+      font-size: clamp(1.55rem, 2.5vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+      color: var(--color-other);
+    }
+
+    /* Colores específicos para el artículo alemán */
+    .art-der {
+      color: var(--color-der);
+    }
+
+    .art-die {
+      color: var(--color-die);
+    }
+
+    .art-das {
+      color: var(--color-das);
+    }
+
+    .word-divider {
+      width: 52px;
+      height: 3.5px;
+      border-radius: 999px;
+      background-color: #fde68a;
+      margin: 0.1rem auto;
+    }
+
+    .word-es {
+      font-size: clamp(0.95rem, 1.35vw, 1.15rem);
+      font-weight: 700;
+      color: var(--color-es);
+      line-height: 1.3;
+    }
+
+    /* ==========================================================================
+       MODO INDIVIDUAL ("UNA A UNA" PARA PIZARRA DIGITAL)
+       ========================================================================== */
+    .single-view {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.35rem;
+      padding: 0.5rem 0 1rem 0;
+      width: 100%;
+    }
+
+    .single-view.active {
+      display: flex;
+    }
+
+    .cards-grid.hidden {
+      display: none;
+    }
+
+    .single-card-stage {
+      width: 100%;
+      max-width: 470px;
+      margin: 0 auto;
+    }
+
+    .single-card-stage .flashcard {
+      aspect-ratio: 4 / 4.2;
+    }
+
+    .single-card-stage .flashcard-face {
+      border-width: 4px;
+      border-radius: 22px;
+      padding: 1.5rem;
+    }
+
+    .single-card-stage .word-de {
+      font-size: clamp(2.25rem, 5vw, 3.35rem);
+    }
+
+    .single-card-stage .word-es {
+      font-size: clamp(1.2rem, 2.4vw, 1.55rem);
+    }
+
+    .single-card-stage .placeholder-file-badge {
+      font-size: 0.95rem;
+      padding: 0.45rem 0.85rem;
+    }
+
+    /* Botones grandes de navegación Anterior / Siguiente */
+    .single-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      width: 100%;
+      max-width: 470px;
+    }
+
+    .btn-nav {
+      flex: 1;
+      min-height: 54px;
+      font-size: 1.1rem;
+      border-radius: 16px;
+      background: #ffffff;
+      color: var(--text-main);
+      border: 2px solid #f59e0b;
+      box-shadow: 0 6px 16px rgba(180, 83, 9, 0.12);
+    }
+
+    .btn-nav:hover {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: #451a03;
+      transform: translateY(-2px);
+    }
+
+    .keyboard-hint {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Pie de página discreto */
+    .app-footer {
+      text-align: center;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Superposición de arrastrar y soltar archivos -->
+  <div id="dropOverlay" class="drop-overlay" aria-hidden="true">
+    <div class="drop-overlay-box">
+      <h2>Suelta tus imágenes aquí</h2>
+      <p>Se emparejarán automáticamente con las 24 tarjetas y quedarán guardadas en este navegador.</p>
+    </div>
+  </div>
+
+  <div class="app-wrapper">
+    <!-- ====================================================================
+         CABECERA LIMPIA CON TÍTULO Y PEQUEÑO FAROLILLO DORADO
+         ==================================================================== -->
+    <header class="app-header">
+      <div class="title-badge">
+        <!-- Pequeño icono limpio de farolillo dorado -->
+        <svg class="lantern-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <path d="M20 4V8" stroke="#B45309" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="20" cy="3.5" r="1.8" stroke="#D97706" stroke-width="1.8"/>
+          <path d="M13 10C13 8.89543 13.8954 8 15 8H25C26.1046 8 27 8.89543 27 10V12H13V10Z" fill="#D97706"/>
+          <rect x="11" y="12" width="18" height="19" rx="4" fill="#FEF3C7" stroke="#D97706" stroke-width="2.2"/>
+          <path d="M20 16.5C20 16.5 17 20.2 17 22.5C17 24.1569 18.3431 25.5 20 25.5C21.6569 25.5 23 24.1569 23 22.5C23 20.2 20 16.5 20 16.5Z" fill="#F59E0B"/>
+          <path d="M12 31H28L26.5 34.5H13.5L12 31Z" fill="#D97706"/>
+        </svg>
+
+        <h1 class="app-title">Sankt Martin Bildkarten</h1>
+      </div>
+    </header>
+
+    <!-- Mensaje de confirmación al arrastrar imágenes locales -->
+    <div id="uploadStatus" class="upload-status" role="status" aria-live="polite"></div>
+
+    <!-- Leyenda de código de colores por género -->
+    <div class="grammar-legend" aria-label="Código de colores por artículo">
+      <span>Código de colores:</span>
+      <span class="legend-chip"><span class="legend-dot" style="background: var(--color-der);"></span> <span style="color: var(--color-der);">der</span> (masculino)</span>
+      <span class="legend-chip"><span class="legend-dot" style="background: var(--color-die);"></span> <span style="color: var(--color-die);">die</span> (femenino)</span>
+      <span class="legend-chip"><span class="legend-dot" style="background: var(--color-das);"></span> <span style="color: var(--color-das);">das</span> (neutro)</span>
+      <span class="legend-chip"><span class="legend-dot" style="background: var(--color-other);"></span> <span style="color: var(--color-other);">verbo / adjetivo</span></span>
+    </div>
+
+    <!-- ====================================================================
+         CONTENEDOR PRINCIPAL DE TARJETAS
+         ==================================================================== -->
+    <main>
+      <!-- 1. Vista en cuadrícula (las 24 tarjetas) -->
+      <div id="cardsGrid" class="cards-grid" aria-label="Cuadrícula de tarjetas de vocabulario"></div>
+
+      <!-- 2. Vista de una tarjeta a la vez (pizarra digital / presentación) -->
+      <div id="singleView" class="single-view" aria-label="Vista individual de tarjeta">
+        <div id="singleCardStage" class="single-card-stage"></div>
+
+        <div class="single-nav">
+          <button type="button" id="btnPrev" class="btn btn-nav" aria-label="Tarjeta anterior">
+            ← Anterior
+          </button>
+          <button type="button" id="btnNext" class="btn btn-nav" aria-label="Siguiente tarjeta">
+            Siguiente →
+          </button>
+        </div>
+        <p class="keyboard-hint">Consejo: Desliza con el dedo o usa las flechas ← → para cambiar de tarjeta y Espacio para girarla.</p>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      Sankt Martin Bildkarten · Material interactivo para clase de alemán (DaF)
+    </footer>
+  </div>
+
+  <!-- ======================================================================
+       LÓGICA JAVASCRIPT (VOCABULARIO EDITABLE, ILUSTRACIONES SVG Y FLIP 3D)
+       ====================================================================== -->
+  <script>
+    /**
+     * ========================================================================
+     * LISTA DE VOCABULARIO (24 TARJETAS)
+     * ========================================================================
+     * Puedes editar fácilmente cualquier palabra, traducción o nombre de archivo:
+     * - clave:     Identificador base sin extensión (ej. "mantel")
+     * - articulo:  "der", "die", "das" o "" (vacío para verbos y adjetivos)
+     * - aleman:    Palabra o expresión completa que se mostrará en alemán
+     * - espanol:   Traducción al español que aparece debajo en letra más pequeña
+     * - archivo:   Nombre principal esperado dentro de la carpeta "imagenes/"
+     * - variantes: Lista de nombres de archivo posibles en "imagenes/"
+     */
+    const VOCABULARIO_SANKT_MARTIN = [
+      { id: 1,  clave: "mantel",     articulo: "der", aleman: "der Mantel",                    espanol: "el manto / la capa",          archivo: "Mantel.png",                 variantes: ["Mantel.png", "mantel.png", "Mantel.jpg", "mantel.jpg"] },
+      { id: 2,  clave: "soldat",     articulo: "der", aleman: "der Soldat",                    espanol: "el soldado",                  archivo: "Soldat.png",                 variantes: ["Soldat.png", "soldat.png", "Soldat.jpg", "soldat.jpg"] },
+      { id: 3,  clave: "pferd",      articulo: "das", aleman: "das Pferd",                     espanol: "el caballo",                  archivo: "Pferd.png",                  variantes: ["Pferd.png", "pferd.png", "Pferd.jpg", "pferd.jpg"] },
+      { id: 4,  clave: "bettler",    articulo: "der", aleman: "der Bettler",                   espanol: "el mendigo",                  archivo: "Bettler.png",                variantes: ["Bettler.png", "bettler.png", "Bettler.jpg", "bettler.jpg"] },
+      { id: 5,  clave: "schwert",    articulo: "das", aleman: "das Schwert",                   espanol: "la espada",                   archivo: "Schwert.png",                variantes: ["Schwert.png", "schwert.png", "Schwert.jpg", "schwert.jpg"] },
+      { id: 6,  clave: "laterne",    articulo: "die", aleman: "die Laterne",                   espanol: "el farolillo",                archivo: "Laterne.png",                variantes: ["Laterne.png", "laterne.png", "Laterne.jpg", "laterne.jpg"] },
+      { id: 7,  clave: "kerze",      articulo: "die", aleman: "die Kerze",                     espanol: "la vela",                     archivo: "Kerze.png",                  variantes: ["Kerze.png", "kerze.png", "Kerze.jpg", "kerze.jpg"] },
+      { id: 8,  clave: "mond",       articulo: "der", aleman: "der Mond",                      espanol: "la luna",                     archivo: "Mond.png",                   variantes: ["Mond.png", "mond.png", "Mond.jpg", "mond.jpg"] },
+      { id: 9,  clave: "stern",      articulo: "der", aleman: "der Stern",                     espanol: "la estrella",                 archivo: "Stern.png",                  variantes: ["Stern.png", "stern.png", "Stern.jpg", "stern.jpg"] },
+      { id: 10, clave: "umzug",      articulo: "der", aleman: "der Umzug",                     espanol: "el desfile",                  archivo: "Umzug.png",                  variantes: ["Umzug.png", "umzug.png", "Umzug.jpg", "umzug.jpg"] },
+      { id: 11, clave: "singen",     articulo: "",    aleman: "singen",                        espanol: "cantar",                      archivo: "singen.png",                 variantes: ["singen.png", "Singen.png", "singen.jpg", "Singen.jpg"] },
+      { id: 12, clave: "lied",       articulo: "das", aleman: "das Lied",                      espanol: "la canción",                  archivo: "Lied.png",                   variantes: ["Lied.png", "lied.png", "Lied.jpg", "lied.jpg"] },
+      { id: 13, clave: "stutenkerl", articulo: "der", aleman: "der Stutenkerl / der Weckmann", espanol: "el hombrecillo de pan dulce", archivo: "Stutenkerl Weckmann.png",    variantes: ["Stutenkerl Weckmann.png", "stutenkerl.png", "Stutenkerl.png", "weckmann.png", "Weckmann.png", "Stutenkerl_Weckmann.png"], alias: ["weckmann", "stutenkerl weckmann", "stutenkerl_weckmann"] },
+      { id: 14, clave: "brezel",     articulo: "die", aleman: "die Brezel",                    espanol: "el pretzel",                  archivo: "Brezel.png",                 variantes: ["Brezel.png", "brezel.png", "Brezel.jpg", "brezel.jpg"] },
+      { id: 15, clave: "gans",       articulo: "die", aleman: "die Gans",                      espanol: "el ganso",                    archivo: "Gans.png",                   variantes: ["Gans.png", "gans.png", "Gans.jpg", "gans.jpg"] },
+      { id: 16, clave: "herbst",     articulo: "der", aleman: "der Herbst",                    espanol: "el otoño",                    archivo: "Herbst.png",                 variantes: ["Herbst.png", "herbst.png", "Herbst.jpg", "herbst.jpg"] },
+      { id: 17, clave: "bischof",    articulo: "der", aleman: "der Bischof",                   espanol: "el obispo",                   archivo: "Bischof.png",                variantes: ["Bischof.png", "bischof.png", "Bischof.jpg", "bischof.jpg"] },
+      { id: 18, clave: "teilen",     articulo: "",    aleman: "teilen",                        espanol: "compartir / dividir",         archivo: "teilen.png",                 variantes: ["teilen.png", "Teilen.png", "teilen.jpg", "Teilen.jpg"] },
+      { id: 19, clave: "reiten",     articulo: "",    aleman: "reiten",                        espanol: "montar a caballo",            archivo: "reiten.png",                 variantes: ["reiten.png", "Reiten.png", "reiten.jpg", "Reiten.jpg"] },
+      { id: 20, clave: "kalt",       articulo: "",    aleman: "kalt",                          espanol: "frío",                        archivo: "kalt.png",                   variantes: ["kalt.png", "Kalt.png", "kalt.jpg", "Kalt.jpg"] },
+      { id: 21, clave: "basteln",    articulo: "",    aleman: "basteln",                       espanol: "hacer manualidades",          archivo: "basteln.png",                variantes: ["basteln.png", "Basteln.png", "basteln.jpg", "Basteln.jpg"] },
+      { id: 22, clave: "licht",      articulo: "das", aleman: "das Licht",                     espanol: "la luz",                      archivo: "Licht.png",                  variantes: ["Licht.png", "licht.png", "Licht.jpg", "licht.jpg"] },
+      { id: 23, clave: "sonne",      articulo: "die", aleman: "die Sonne",                     espanol: "el sol",                      archivo: "SONNE.png",                  variantes: ["SONNE.png", "Sonne.png", "sonne.png", "SONNE.jpg", "sonne.jpg"] },
+      { id: 24, clave: "nacht",      articulo: "die", aleman: "die Nacht",                     espanol: "la noche",                    archivo: "NACHT.jpg",                  variantes: ["NACHT.jpg", "Nacht.jpg", "nacht.jpg", "NACHT.png", "Nacht.png", "nacht.png"] }
+    ];
+
+    // ========================================================================
+    // ESTADO DE LA APLICACIÓN
+    // ========================================================================
+    let tarjetasActuales = [...VOCABULARIO_SANKT_MARTIN]; // Copia del array para poder barajar
+    let modoVista = "grid"; // "grid" (cuadrícula) o "single" (una tarjeta a la vez)
+    let indiceActual = 0;   // Índice de la tarjeta en modo "Una tarjeta a la vez"
+    let tarjetaIndividualGirada = false; // Estado de giro en modo individual
+    const tarjetasVistasIds = new Set(); // Registra qué tarjetas se han girado en cuadrícula
+    const imagenesSubidasUsuario = new Map(); // Almacena URLs de imágenes cargadas con el botón
+
+    // ========================================================================
+    // REFERENCIAS AL DOM
+    // ========================================================================
+    const cardsGridEl = document.getElementById("cardsGrid");
+    const singleViewEl = document.getElementById("singleView");
+    const singleCardStageEl = document.getElementById("singleCardStage");
+    const progressCounterEl = document.getElementById("progressCounter");
+    const uploadStatusEl = document.getElementById("uploadStatus");
+
+    const btnViewGrid = document.getElementById("btnViewGrid");
+    const btnViewSingle = document.getElementById("btnViewSingle");
+    const btnUploadImages = document.getElementById("btnUploadImages");
+    const btnExportClean = document.getElementById("btnExportClean");
+    const btnClearSaved = document.getElementById("btnClearSaved");
+    const fileInputImages = document.getElementById("fileInputImages");
+    const dropOverlayEl = document.getElementById("dropOverlay");
+    const btnShuffle = document.getElementById("btnShuffle");
+    const btnResetFlip = document.getElementById("btnResetFlip");
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+
+    // ========================================================================
+    // ALMACENAMIENTO PERSISTENTE EN EL NAVEGADOR (INDEXEDDB)
+    // Guarda las imágenes cargadas por el usuario para no tener que subirlas
+    // de nuevo al recargar o abrir la página otro día en el mismo dispositivo.
+    // ========================================================================
+    const DB_NAME = "SanktMartinBildkartenDB";
+    const DB_STORE = "imagenes_tarjetas";
+
+    function abrirBaseDatos() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          reject(new Error("IndexedDB no disponible"));
+          return;
+        }
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(DB_STORE)) {
+            db.createObjectStore(DB_STORE);
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function guardarImagenEnDB(clave, dataUrl) {
+      try {
+        const db = await abrirBaseDatos();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(DB_STORE, "readwrite");
+          tx.objectStore(DB_STORE).put(dataUrl, clave);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        });
+      } catch (err) {
+        console.warn("No se pudo guardar en IndexedDB:", err);
+      }
+    }
+
+    async function cargarImagenesDesdeDB() {
+      try {
+        const db = await abrirBaseDatos();
+        return new Promise((resolve) => {
+          const tx = db.transaction(DB_STORE, "readonly");
+          const store = tx.objectStore(DB_STORE);
+          const reqKeys = store.getAllKeys();
+          const reqVals = store.getAll();
+
+          tx.oncomplete = () => {
+            const keys = reqKeys.result || [];
+            const vals = reqVals.result || [];
+            keys.forEach((k, idx) => {
+              if (vals[idx]) {
+                imagenesSubidasUsuario.set(k, vals[idx]);
+              }
+            });
+            actualizarVisibilidadBotonLimpiar();
+            resolve(keys.length);
+          };
+          tx.onerror = () => resolve(0);
+        });
+      } catch (err) {
+        return 0;
+      }
+    }
+
+    async function limpiarImagenesEnDB() {
+      try {
+        const db = await abrirBaseDatos();
+        return new Promise((resolve) => {
+          const tx = db.transaction(DB_STORE, "readwrite");
+          tx.objectStore(DB_STORE).clear();
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => resolve();
+        });
+      } catch (err) {
+        // Ignorar si no hay DB
+      }
+    }
+
+    function actualizarVisibilidadBotonLimpiar() {
+      if (btnClearSaved) {
+        if (imagenesSubidasUsuario.size > 0) {
+          btnClearSaved.classList.add("visible");
+        } else {
+          btnClearSaved.classList.remove("visible");
+        }
+      }
+    }
+
+    // ========================================================================
+    // FUNCIONES AUXILIARES
+    // ========================================================================
+
+    /**
+     * Formatea el texto en alemán resaltando los artículos ("der", "die", "das")
+     * con su color correspondiente y manteniendo el resto de la palabra en neutro.
+     */
+    function formatearTextoAlemanConColor(item) {
+      if (!item.articulo) {
+        return item.aleman;
+      }
+
+      // Colorea cada aparición de "der", "die" o "das" al inicio de palabra (incluyendo "der Stutenkerl / der Weckmann")
+      return item.aleman.replace(/\b(der|die|das)\b/g, (match) => {
+        return `<span class="art-${match}">${match}</span>`;
+      });
+    }
+
+    /**
+     * Inserta en la cara delantera un marcador de posición limpio y elegante
+     * con el nombre exacto del archivo esperado dentro de "imagenes/".
+     */
+    function mostrarMarcadorVisual(frontEl, item) {
+      frontEl.innerHTML = `
+        <div class="img-placeholder">
+          <span class="placeholder-label">Imagen pendiente</span>
+          <div class="placeholder-file-badge" title="Coloca este archivo en la carpeta imagenes/">
+            imagenes/${item.archivo}
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * Carga la imagen de la tarjeta:
+     * 1. Si el usuario la seleccionó o está guardada en IndexedDB, la usa al instante.
+     * 2. Si no, busca en "imagenes/" probando todas las variantes exactas (mayúsculas,
+     *    minúsculas, .png, .jpg, .jpeg, .webp).
+     * 3. Si aún no existe el archivo local, muestra el marcador limpio sin iconos rotos.
+     */
+    function cargarImagenEnCaraDelantera(frontEl, item) {
+      if (imagenesSubidasUsuario.has(item.clave)) {
+        const img = document.createElement("img");
+        img.className = "card-img";
+        img.src = imagenesSubidasUsuario.get(item.clave);
+        img.alt = item.aleman;
+        frontEl.innerHTML = "";
+        frontEl.appendChild(img);
+        return;
+      }
+
+      const candidatos = Array.from(new Set([
+        ...(item.variantes || []),
+        `${item.clave}.png`,
+        `${item.clave}.jpg`,
+        `${item.clave}.jpeg`,
+        `${item.clave}.webp`
+      ]));
+
+      let intento = 0;
+      const img = document.createElement("img");
+      img.className = "card-img";
+      img.alt = item.aleman;
+      img.loading = "lazy";
+
+      function probarSiguienteCandidato() {
+        if (intento >= candidatos.length) {
+          mostrarMarcadorVisual(frontEl, item);
+          return;
+        }
+        const archivoCandidato = candidatos[intento++];
+        img.src = `imagenes/${encodeURI(archivoCandidato)}`;
+      }
+
+      img.onerror = probarSiguienteCandidato;
+      frontEl.innerHTML = "";
+      frontEl.appendChild(img);
+      probarSiguienteCandidato();
+    }
+
+    /**
+     * Crea el elemento HTML de una tarjeta interactiva (con efecto flip 3D).
+     */
+    function crearElementoTarjeta(item, esModoIndividual = false) {
+      const card = document.createElement("div");
+      card.className = "flashcard";
+      card.setAttribute("role", "button");
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("aria-label", `Tarjeta de vocabulario: ${item.espanol}. Haz clic para girar.`);
+
+      if (esModoIndividual && tarjetaIndividualGirada) {
+        card.classList.add("is-flipped");
+      }
+
+      const inner = document.createElement("div");
+      inner.className = "flashcard-inner";
+
+      // --- CARA DELANTERA (SOLO IMAGEN O MARCADOR VISUAL) ---
+      const front = document.createElement("div");
+      front.className = "flashcard-face flashcard-front";
+      cargarImagenEnCaraDelantera(front, item);
+
+      // --- CARA TRASERA (PALABRA EN ALEMÁN + TRADUCCIÓN AL ESPAÑOL) ---
+      const back = document.createElement("div");
+      const claseGeneroFondo = item.articulo ? `gender-${item.articulo}` : "";
+      back.className = `flashcard-face flashcard-back ${claseGeneroFondo}`.trim();
+
+      back.innerHTML = `
+        <div class="word-de">${formatearTextoAlemanConColor(item)}</div>
+        <div class="word-divider"></div>
+        <div class="word-es">${item.espanol}</div>
+      `;
+
+      inner.appendChild(front);
+      inner.appendChild(back);
+      card.appendChild(inner);
+
+      // Evento de clic o toque para girar la tarjeta
+      const alternarGiro = () => {
+        const girada = card.classList.toggle("is-flipped");
+
+        if (esModoIndividual) {
+          tarjetaIndividualGirada = girada;
+        } else {
+          if (girada) {
+            tarjetasVistasIds.add(item.id);
+          }
+          actualizarContador();
+        }
+      };
+
+      card.addEventListener("click", alternarGiro);
+
+      // Accesibilidad con teclado (Enter o Espacio sobre la tarjeta enfocada)
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          alternarGiro();
+        }
+      });
+
+      return card;
+    }
+
+    /**
+     * Renderiza las 24 tarjetas en la vista de cuadrícula.
+     */
+    function renderizarCuadricula() {
+      cardsGridEl.innerHTML = "";
+      tarjetasActuales.forEach((item) => {
+        const cardEl = crearElementoTarjeta(item, false);
+        cardsGridEl.appendChild(cardEl);
+      });
+      actualizarContador();
+    }
+
+    /**
+     * Renderiza la tarjeta actual en el modo "Una tarjeta a la vez".
+     */
+    function renderizarTarjetaIndividual() {
+      singleCardStageEl.innerHTML = "";
+      const itemActual = tarjetasActuales[indiceActual];
+      const cardEl = crearElementoTarjeta(itemActual, true);
+      singleCardStageEl.appendChild(cardEl);
+      actualizarContador();
+    }
+
+    /**
+     * Actualiza el texto del contador superior según el modo de vista activo.
+     */
+    function actualizarContador() {
+      if (!progressCounterEl) return;
+      const total = tarjetasActuales.length;
+      if (modoVista === "single") {
+        progressCounterEl.textContent = `${indiceActual + 1} / ${total}`;
+      } else {
+        progressCounterEl.textContent = `Tarjetas giradas: ${tarjetasVistasIds.size} / ${total}`;
+      }
+    }
+
+    /**
+     * Cambia entre "Cuadrícula (24)" y "Una a una".
+     */
+    function cambiarModoVista(nuevoModo) {
+      modoVista = nuevoModo;
+
+      if (modoVista === "grid") {
+        if (btnViewGrid) {
+          btnViewGrid.classList.add("active");
+          btnViewGrid.setAttribute("aria-pressed", "true");
+        }
+        if (btnViewSingle) {
+          btnViewSingle.classList.remove("active");
+          btnViewSingle.setAttribute("aria-pressed", "false");
+        }
+
+        cardsGridEl.classList.remove("hidden");
+        singleViewEl.classList.remove("active");
+        actualizarContador();
+      } else {
+        if (btnViewSingle) {
+          btnViewSingle.classList.add("active");
+          btnViewSingle.setAttribute("aria-pressed", "true");
+        }
+        if (btnViewGrid) {
+          btnViewGrid.classList.remove("active");
+          btnViewGrid.setAttribute("aria-pressed", "false");
+        }
+
+        cardsGridEl.classList.add("hidden");
+        singleViewEl.classList.add("active");
+        tarjetaIndividualGirada = false;
+        renderizarTarjetaIndividual();
+      }
+    }
+
+    /**
+     * Baraja el orden de las tarjetas (algoritmo Fisher-Yates).
+     */
+    function mezclarTarjetas() {
+      for (let i = tarjetasActuales.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [tarjetasActuales[i], tarjetasActuales[j]] = [tarjetasActuales[j], tarjetasActuales[i]];
+      }
+      indiceActual = 0;
+      tarjetaIndividualGirada = false;
+      tarjetasVistasIds.clear();
+
+      renderizarCuadricula();
+      if (modoVista === "single") {
+        renderizarTarjetaIndividual();
+      }
+    }
+
+    /**
+     * Pone todas las tarjetas boca arriba (mostrando la imagen).
+     */
+    function darLaVueltaATodas() {
+      document.querySelectorAll(".flashcard.is-flipped").forEach((card) => {
+        card.classList.remove("is-flipped");
+      });
+      tarjetaIndividualGirada = false;
+      tarjetasVistasIds.clear();
+      actualizarContador();
+    }
+
+    /**
+     * Navega a la tarjeta anterior en modo individual.
+     */
+    function irAnterior() {
+      indiceActual = (indiceActual - 1 + tarjetasActuales.length) % tarjetasActuales.length;
+      tarjetaIndividualGirada = false;
+      renderizarTarjetaIndividual();
+    }
+
+    /**
+     * Navega a la tarjeta siguiente en modo individual.
+     */
+    function irSiguiente() {
+      indiceActual = (indiceActual + 1) % tarjetasActuales.length;
+      tarjetaIndividualGirada = false;
+      renderizarTarjetaIndividual();
+    }
+
+    /**
+     * Empareja automáticamente los archivos seleccionados o arrastrados por el usuario
+     * (sin importar mayúsculas/minúsculas, extensión ni espacios) y los guarda en IndexedDB.
+     */
+    function leerArchivoComoDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function procesarArchivosSeleccionados(fileList) {
+      let emparejadas = 0;
+
+      for (const file of Array.from(fileList)) {
+        if (!file.type.startsWith("image/")) continue;
+
+        const nombreNormalizado = file.name
+          .toLowerCase()
+          .replace(/\.[^/.]+$/, "") // Quita extensión (.png, .jpg, etc.)
+          .replace(/^(der|die|das)[\s_-]+/, "") // Quita artículo si lo tuviera
+          .replace(/[_-]+/g, " ")
+          .trim();
+
+        const coincidencia = VOCABULARIO_SANKT_MARTIN.find((item) => {
+          if (nombreNormalizado === item.clave || nombreNormalizado.includes(item.clave)) return true;
+          if (item.alias && item.alias.some((a) => nombreNormalizado === a || nombreNormalizado.includes(a))) return true;
+          return false;
+        });
+
+        if (coincidencia) {
+          try {
+            const dataUrl = await leerArchivoComoDataURL(file);
+            imagenesSubidasUsuario.set(coincidencia.clave, dataUrl);
+            await guardarImagenEnDB(coincidencia.clave, dataUrl);
+            emparejadas++;
+          } catch (err) {
+            console.error("Error al procesar imagen:", file.name, err);
+          }
+        }
+      }
+
+      actualizarVisibilidadBotonLimpiar();
+
+      if (emparejadas > 0) {
+        uploadStatusEl.textContent = `¡Perfecto! Se han cargado y guardado ${emparejadas} imagen(es) (${imagenesSubidasUsuario.size} / 24 en total).`;
+        uploadStatusEl.classList.add("visible");
+        renderizarCuadricula();
+        if (modoVista === "single") {
+          renderizarTarjetaIndividual();
+        }
+      } else {
+        uploadStatusEl.textContent = "No coincidió ningún nombre de archivo. Asegúrate de que el nombre incluya la palabra en alemán (ej. Mantel.png, Soldat.png, SONNE.png, NACHT.jpg...).";
+        uploadStatusEl.classList.add("visible");
+      }
+    }
+
+    // ========================================================================
+    // EVENTOS DE BOTONES, DRAG & DROP, TÁCTIL Y TECLADO
+    // ========================================================================
+    if (btnViewGrid) btnViewGrid.addEventListener("click", () => cambiarModoVista("grid"));
+    if (btnViewSingle) btnViewSingle.addEventListener("click", () => cambiarModoVista("single"));
+    if (btnUploadImages && fileInputImages) {
+      btnUploadImages.addEventListener("click", () => fileInputImages.click());
+      fileInputImages.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+          procesarArchivosSeleccionados(e.target.files);
+          e.target.value = "";
+        }
+      });
+    }
+
+    // Exporta una versión limpia y autocontenida (sin botones de edición) lista para subir a GitHub o compartir
+    if (btnExportClean) btnExportClean.addEventListener("click", () => {
+      const clonDoc = document.documentElement.cloneNode(true);
+      ["btnUploadImages", "btnExportClean", "btnClearSaved", "fileInputImages", "uploadStatus", "dropOverlay"].forEach((id) => {
+        const el = clonDoc.querySelector("#" + id);
+        if (el) el.remove();
+      });
+
+      const mapaIncrustado = {};
+      imagenesSubidasUsuario.forEach((val, key) => {
+        mapaIncrustado[key] = val;
+      });
+
+      const scriptIncrustado = document.createElement("script");
+      scriptIncrustado.textContent = `window.__IMAGENES_INCRUSTADAS__ = ${JSON.stringify(mapaIncrustado)};`;
+      const bodyClon = clonDoc.querySelector("body");
+      bodyClon.insertBefore(scriptIncrustado, bodyClon.querySelector("script"));
+
+      const htmlFinal = "<!DOCTYPE html>\n" + clonDoc.outerHTML;
+      const blob = new Blob([htmlFinal], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const enlace = document.createElement("a");
+      enlace.href = url;
+      enlace.download = "index.html";
+      enlace.click();
+      URL.revokeObjectURL(url);
+    });
+
+    if (btnClearSaved) btnClearSaved.addEventListener("click", async () => {
+      await limpiarImagenesEnDB();
+      imagenesSubidasUsuario.clear();
+      actualizarVisibilidadBotonLimpiar();
+      uploadStatusEl.textContent = "Se han borrado las imágenes guardadas en el navegador.";
+      uploadStatusEl.classList.add("visible");
+      renderizarCuadricula();
+      if (modoVista === "single") {
+        renderizarTarjetaIndividual();
+      }
+    });
+
+    // Arrastrar y soltar archivos en cualquier parte de la ventana
+    let dragCounter = 0;
+    window.addEventListener("dragenter", (e) => {
+      if (e.dataTransfer && Array.from(e.dataTransfer.types).includes("Files")) {
+        e.preventDefault();
+        dragCounter++;
+        dropOverlayEl.classList.add("active");
+      }
+    });
+
+    window.addEventListener("dragover", (e) => {
+      if (e.dataTransfer && Array.from(e.dataTransfer.types).includes("Files")) {
+        e.preventDefault();
+      }
+    });
+
+    window.addEventListener("dragleave", () => {
+      dragCounter = Math.max(0, dragCounter - 1);
+      if (dragCounter === 0) {
+        dropOverlayEl.classList.remove("active");
+      }
+    });
+
+    window.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dragCounter = 0;
+      dropOverlayEl.classList.remove("active");
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        procesarArchivosSeleccionados(e.dataTransfer.files);
+      }
+    });
+
+    if (btnShuffle) btnShuffle.addEventListener("click", mezclarTarjetas);
+    if (btnResetFlip) btnResetFlip.addEventListener("click", darLaVueltaATodas);
+    if (btnPrev) btnPrev.addEventListener("click", irAnterior);
+    if (btnNext) btnNext.addEventListener("click", irSiguiente);
+
+    // Gestos de deslizamiento (swipe) en tablet/móvil para el modo individual
+    let touchStartX = 0;
+    singleCardStageEl.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    singleCardStageEl.addEventListener("touchend", (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 55) {
+        if (diff > 0) irAnterior();
+        else irSiguiente();
+      }
+    }, { passive: true });
+
+    // Navegación rápida con teclado en modo "Una tarjeta a la vez"
+    document.addEventListener("keydown", (e) => {
+      if (modoVista !== "single") return;
+
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        irAnterior();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        irSiguiente();
+      } else if (e.key === " " && document.activeElement.tagName !== "BUTTON") {
+        e.preventDefault();
+        const card = singleCardStageEl.querySelector(".flashcard");
+        if (card) {
+          tarjetaIndividualGirada = card.classList.toggle("is-flipped");
+        }
+      }
+    });
+
+    // ========================================================================
+    // INICIALIZACIÓN
+    // ========================================================================
+    (async function iniciarAplicacion() {
+      if (window.__IMAGENES_INCRUSTADAS__) {
+        Object.entries(window.__IMAGENES_INCRUSTADAS__).forEach(([k, v]) => {
+          imagenesSubidasUsuario.set(k, v);
+        });
+      }
+      const guardadas = await cargarImagenesDesdeDB();
+      if (guardadas > 0 && !window.__IMAGENES_INCRUSTADAS__) {
+        uploadStatusEl.textContent = `Se han restaurado automáticamente ${guardadas} imagen(es) guardadas en este navegador.`;
+        uploadStatusEl.classList.add("visible");
+      }
+      renderizarCuadricula();
+    })();
+  </script>
+</body>
+</html>
